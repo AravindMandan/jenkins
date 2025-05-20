@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         VENV = 'venv'
-        IMAGE_NAME = 'your-dockerhub-aravindmandan/jenkins-app'
+        IMAGE_NAME = aravindmandan/jenkins-app'
         TAG = 'latest'
     }
 
