@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         VENV = 'venv'
+        IMAGE_NAME = 'your-dockerhub-aravindmandan/jenkins-app'
+        TAG = 'latest'
     }
 
     stages {
@@ -16,6 +18,7 @@ pipeline {
                 '''
             }
         }
+
         stage ("Linting") {
             steps {
                 script {
@@ -23,20 +26,46 @@ pipeline {
                 }
             }
         }
+
         stage ("Install Packages") {
             steps {
                 script {
-                    echo "This is Install PAkcges Step"
-                }
-            }
-        }
-        stage ("Run Application") {
-            steps {
-                script {
-                    echo "This is my Run applcaition Step"
+                    echo "This is Install Packages Step"
                 }
             }
         }
 
+        stage ("Run Application") {
+            steps {
+                script {
+                    echo "This is my Run application Step"
+                }
+            }
+        }
+
+        stage ("Build Docker Image") {
+            steps {
+                script {
+                    echo "Building Docker Image"
+                    sh """
+                        docker build -t ${IMAGE_NAME}:${TAG} .
+                    """
+                }
+            }
+        }
+
+        stage ("Push Docker Image") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    script {
+                        echo "Pushing Docker Image to Docker Hub"
+                        sh """
+                            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                            docker push ${IMAGE_NAME}:${TAG}
+                        """
+                    }
+                }
+            }
+        }
     }
 }
