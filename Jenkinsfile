@@ -8,19 +8,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                
-                git url: 'https://github.com/AravindMandan/jenkins.git', branch: 'main'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                
-                sh 'git remote -v'
-            }
-        }
         stage ("Install") {
             steps {
                 sh '''
